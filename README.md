@@ -39,31 +39,47 @@ npm start
 ```
 
 The CLI tool will:
-1. Present an interactive multi-select menu of available standards
-2. Allow you to select multiple standards at once using spacebar
-3. Fetch the selected standard(s) directly from GitHub
-4. Automatically create an `ai-context/` folder in your current directory
-5. Save each standard as a separate file with a fixed name
-6. Make it easy to provide context to your AI assistant
+1. Present a menu to choose between fetching standards or installing Claude settings
+2. **Fetch Standards**: Download AI context standards to a `.context/` folder
+   - Interactive multi-select menu of available standards
+   - Select multiple standards at once using spacebar
+   - Automatically create a `.context/` folder in your current directory
+   - Save each standard as a separate file with a fixed name
+3. **Install Claude Settings**: Set up `.claude/settings.json` in your home directory
+   - Installs default Windows configuration with sound notifications
+   - Configurable statusline command path
+   - Pre-configured hooks for Bash tool usage
 
 **Example Usage:**
 ```bash
 ai-context
-# Use space to select multiple standards (e.g., Coding Standards, Design Standards)
-# Press enter to confirm
-# Files are automatically saved to ./ai-context/ folder:
+
+# Option 1: Fetch AI Context Standards
+# - Select "Fetch AI Context Standards"
+# - Use space to select multiple standards (e.g., Coding Standards, Design Standards)
+# - Press enter to confirm
+# - Files are automatically saved to ./.context/ folder:
 #   - coding-standards.md
 #   - design-standards.md
-# Copy and paste these files into your AI chat as needed
+# - Copy and paste these files into your AI chat as needed
+
+# Option 2: Install Claude Settings
+# - Select "Install Claude Settings"
+# - Choose whether to customize statusline path
+# - settings.json will be created in ~/.claude/ directory
+# - Default Windows configuration includes sound notifications
 ```
 
-**Output Files:**
-- `coding-standards.md` - Coding conventions and TypeScript guidelines
-- `design-standards.md` - UI/UX and design system guidelines
-- `seo-standards.md` - SEO best practices and optimization
-- `accessibility-standards.md` - WCAG compliance and a11y guidelines
-- `content-guidelines.md` - Copywriting and content structure
-- `performance-standards.md` - Web vitals and optimization strategies
+**Output Files (Fetch Standards):**
+- `.context/coding-standards.md` - Coding conventions and TypeScript guidelines
+- `.context/design-standards.md` - UI/UX and design system guidelines
+- `.context/seo-standards.md` - SEO best practices and optimization
+- `.context/accessibility-standards.md` - WCAG compliance and a11y guidelines
+- `.context/content-guidelines.md` - Copywriting and content structure
+- `.context/performance-standards.md` - Web vitals and optimization strategies
+
+**Output Files (Install Claude):**
+- `~/.claude/settings.json` - Claude Code settings with hooks and permissions
 
 ### For Development Teams
 

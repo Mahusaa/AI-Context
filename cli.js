@@ -60,7 +60,7 @@ async function fetchFile(filePath) {
   }
 }
 
-async function main() {
+async function mainFetch() {
   console.log('\n🤖 AI Context Fetcher\n');
   console.log('Select which standards you want to use as AI context:');
   console.log('(Use space to select, enter to confirm)\n');
@@ -85,8 +85,8 @@ async function main() {
     process.exit(0);
   }
 
-  // Create ai-context folder if it doesn't exist
-  const outputDir = path.join(process.cwd(), 'ai-context');
+  // Create .context folder if it doesn't exist
+  const outputDir = path.join(process.cwd(), '.context');
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
     console.log(`\n✓ Created folder: ${outputDir}\n`);
@@ -150,6 +150,143 @@ async function main() {
   }
 
   console.log('\n💡 You can now use these files as context for your AI assistant!\n');
+}
+
+async function installClaude() {
+  console.log('\n🔧 Claude Settings Installation\n');
+
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  const claudeDir = path.join(homeDir, '.claude');
+  const settingsPath = path.join(claudeDir, 'settings.json');
+
+  // Check if .claude folder already exists
+  if (fs.existsSync(settingsPath)) {
+    const overwrite = await prompts({
+      type: 'confirm',
+      name: 'value',
+      message: `settings.json already exists at ${settingsPath}. Overwrite?`,
+      initial: false
+    });
+
+    if (!overwrite.value) {
+      console.log('\n❌ Installation cancelled.\n');
+      process.exit(0);
+    }
+  }
+
+  // Create .claude directory if it doesn't exist
+  if (!fs.existsSync(claudeDir)) {
+    fs.mkdirSync(claudeDir, { recursive: true });
+    console.log(`\n✓ Created directory: ${claudeDir}`);
+  }
+
+  // Default settings template (Windows version)
+  const defaultSettings = {
+    statusLine: {
+      type: "command",
+      command: "bash E:/home/despro/.claude/statusline-command.sh"
+    },
+    hooks: {
+      Notification: [
+        {
+          hooks: [
+            {
+              type: "command",
+              command: "powershell -c (New-Object Media.SoundPlayer 'C:\\Windows\\Media\\confir.wav').PlaySync()"
+            }
+          ]
+        }
+      ],
+      Stop: [
+        {
+          hooks: [
+            {
+              type: "command",
+              command: "powershell -c (New-Object Media.SoundPlayer 'C:\\Windows\\Media\\done.wav').PlaySync()"
+            }
+          ]
+        }
+      ],
+      PreToolUse: [
+        {
+          matcher: "Bash",
+          hooks: [
+            {
+              type: "command",
+              command: "powershell -c (New-Object Media.SoundPlayer 'C:\\Windows\\Media\\Windows Notify Email.wav').PlaySync()"
+            }
+          ]
+        }
+      ]
+    },
+    permissions: {
+      allow: [
+        "Bash:powershell"
+      ]
+    }
+  };
+
+  // Ask if user wants to customize the statusline path
+  const customizeStatusline = await prompts({
+    type: 'confirm',
+    name: 'value',
+    message: 'Do you want to customize the statusline command path?',
+    initial: false
+  });
+
+  if (customizeStatusline.value) {
+    const statuslineResponse = await prompts({
+      type: 'text',
+      name: 'path',
+      message: 'Enter the full path to your statusline-command.sh:',
+      initial: defaultSettings.statusLine.command.replace('bash ', '')
+    });
+
+    if (statuslineResponse.path) {
+      defaultSettings.statusLine.command = `bash ${statuslineResponse.path}`;
+    }
+  }
+
+  // Write settings.json
+  try {
+    fs.writeFileSync(settingsPath, JSON.stringify(defaultSettings, null, 2), 'utf8');
+    console.log(`\n✓ settings.json created successfully!`);
+    console.log(`   Location: ${settingsPath}\n`);
+
+    console.log('📋 Installed configuration:');
+    console.log('   - Status line command');
+    console.log('   - Sound notifications (Windows)');
+    console.log('   - PowerShell permissions');
+
+    console.log('\n💡 You can edit this file manually to customize your Claude settings.\n');
+  } catch (error) {
+    console.error(`\n❌ Error writing settings.json: ${error.message}\n`);
+    process.exit(1);
+  }
+}
+
+async function main() {
+  const action = await prompts({
+    type: 'select',
+    name: 'value',
+    message: 'What would you like to do?',
+    choices: [
+      { title: 'Fetch AI Context Standards', description: 'Download standards to .context/ folder', value: 'fetch' },
+      { title: 'Install Claude Settings', description: 'Set up .claude/settings.json', value: 'install' }
+    ],
+    initial: 0
+  });
+
+  if (!action.value) {
+    console.log('\n❌ No selection made. Exiting.\n');
+    process.exit(0);
+  }
+
+  if (action.value === 'fetch') {
+    await mainFetch();
+  } else if (action.value === 'install') {
+    await installClaude();
+  }
 }
 
 main().catch(error => {
