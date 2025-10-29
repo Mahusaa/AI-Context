@@ -21,18 +21,18 @@ The easiest way to use these standards is with our CLI tool:
 
 **Option 1: Install Globally (Recommended)**
 ```bash
-npm install -g https://github.com/Mahusaa/Database-Readme.git
+npm install -g https://github.com/Mahusaa/AI-Context.git
 ai-context
 ```
 
 **Option 2: Use with npx (No Installation)**
 ```bash
-npx https://github.com/Mahusaa/Database-Readme.git
+npx https://github.com/Mahusaa/AI-Context.git
 ```
 
 **Option 3: Clone and Run Locally**
 ```bash
-git clone https://github.com/Mahusaa/Database-Readme.git
+git clone https://github.com/Mahusaa/AI-Context.git
 cd Database-Readme
 npm install
 npm start
