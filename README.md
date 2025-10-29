@@ -15,6 +15,44 @@ By providing this context to AI assistants, we ensure:
 
 ## How to Use
 
+### Quick Start with CLI Tool
+
+The easiest way to use these standards is with our CLI tool:
+
+**Option 1: Install Globally (Recommended)**
+```bash
+npm install -g https://github.com/Mahusaa/Database-Readme.git
+ai-context
+```
+
+**Option 2: Use with npx (No Installation)**
+```bash
+npx https://github.com/Mahusaa/Database-Readme.git
+```
+
+**Option 3: Clone and Run Locally**
+```bash
+git clone https://github.com/Mahusaa/Database-Readme.git
+cd Database-Readme
+npm install
+npm start
+```
+
+The CLI tool will:
+1. Present an interactive menu of available standards
+2. Fetch the selected standard(s) directly from GitHub
+3. Let you display in terminal or save to a file
+4. Make it easy to provide context to your AI assistant
+
+**Example Usage:**
+```bash
+ai-context
+# Select "Coding Standards"
+# Choose "Save to file"
+# File saved as ai-context-coding.md
+# Copy and paste into your AI chat
+```
+
 ### For Development Teams
 
 1. **Clone this repository** alongside your project
