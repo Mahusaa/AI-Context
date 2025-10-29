@@ -39,19 +39,31 @@ npm start
 ```
 
 The CLI tool will:
-1. Present an interactive menu of available standards
-2. Fetch the selected standard(s) directly from GitHub
-3. Let you display in terminal or save to a file
-4. Make it easy to provide context to your AI assistant
+1. Present an interactive multi-select menu of available standards
+2. Allow you to select multiple standards at once using spacebar
+3. Fetch the selected standard(s) directly from GitHub
+4. Automatically create an `ai-context/` folder in your current directory
+5. Save each standard as a separate file with a fixed name
+6. Make it easy to provide context to your AI assistant
 
 **Example Usage:**
 ```bash
 ai-context
-# Select "Coding Standards"
-# Choose "Save to file"
-# File saved as ai-context-coding.md
-# Copy and paste into your AI chat
+# Use space to select multiple standards (e.g., Coding Standards, Design Standards)
+# Press enter to confirm
+# Files are automatically saved to ./ai-context/ folder:
+#   - coding-standards.md
+#   - design-standards.md
+# Copy and paste these files into your AI chat as needed
 ```
+
+**Output Files:**
+- `coding-standards.md` - Coding conventions and TypeScript guidelines
+- `design-standards.md` - UI/UX and design system guidelines
+- `seo-standards.md` - SEO best practices and optimization
+- `accessibility-standards.md` - WCAG compliance and a11y guidelines
+- `content-guidelines.md` - Copywriting and content structure
+- `performance-standards.md` - Web vitals and optimization strategies
 
 ### For Development Teams
 
