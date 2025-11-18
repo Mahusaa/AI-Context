@@ -158,6 +158,7 @@ async function installClaude() {
   const homeDir = process.env.HOME || process.env.USERPROFILE;
   const claudeDir = path.join(homeDir, '.claude');
   const settingsPath = path.join(claudeDir, 'settings.json');
+  const statuslineScriptPath = path.join(claudeDir, 'statusline-command.sh');
 
   // Check if .claude folder already exists
   if (fs.existsSync(settingsPath)) {
@@ -180,11 +181,29 @@ async function installClaude() {
     console.log(`\n✓ Created directory: ${claudeDir}`);
   }
 
+  // Copy statusline-command.sh from templates to .claude directory
+  const templatePath = path.join(__dirname, '.claude-templates', 'statusline-command.sh');
+  if (fs.existsSync(templatePath)) {
+    fs.copyFileSync(templatePath, statuslineScriptPath);
+    // Make the script executable (Unix-based systems)
+    try {
+      fs.chmodSync(statuslineScriptPath, '755');
+    } catch (error) {
+      // chmod might fail on Windows, that's okay
+    }
+    console.log(`✓ Copied statusline script to: ${statuslineScriptPath}`);
+  } else {
+    console.log(`⚠️  Warning: statusline-command.sh template not found at ${templatePath}`);
+  }
+
+  // Convert path to Unix-style for bash command (works on Windows Git Bash too)
+  const statuslineCommand = statuslineScriptPath.replace(/\\/g, '/');
+
   // Default settings template (Windows version)
   const defaultSettings = {
     statusLine: {
       type: "command",
-      command: "bash E:/home/despro/.claude/statusline-command.sh"
+      command: `bash ${statuslineCommand}`
     },
     hooks: {
       Notification: [
@@ -226,39 +245,19 @@ async function installClaude() {
     }
   };
 
-  // Ask if user wants to customize the statusline path
-  const customizeStatusline = await prompts({
-    type: 'confirm',
-    name: 'value',
-    message: 'Do you want to customize the statusline command path?',
-    initial: false
-  });
-
-  if (customizeStatusline.value) {
-    const statuslineResponse = await prompts({
-      type: 'text',
-      name: 'path',
-      message: 'Enter the full path to your statusline-command.sh:',
-      initial: defaultSettings.statusLine.command.replace('bash ', '')
-    });
-
-    if (statuslineResponse.path) {
-      defaultSettings.statusLine.command = `bash ${statuslineResponse.path}`;
-    }
-  }
-
   // Write settings.json
   try {
     fs.writeFileSync(settingsPath, JSON.stringify(defaultSettings, null, 2), 'utf8');
-    console.log(`\n✓ settings.json created successfully!`);
-    console.log(`   Location: ${settingsPath}\n`);
+    console.log(`\n✅ Claude settings installed successfully!\n`);
+    console.log(`📋 Installed components:`);
+    console.log(`   - settings.json → ${settingsPath}`);
+    console.log(`   - statusline-command.sh → ${statuslineScriptPath}`);
+    console.log(`\n⚙️  Configuration:`);
+    console.log(`   - Enhanced status line with git info`);
+    console.log(`   - Sound notifications (Windows)`);
+    console.log(`   - PowerShell permissions`);
 
-    console.log('📋 Installed configuration:');
-    console.log('   - Status line command');
-    console.log('   - Sound notifications (Windows)');
-    console.log('   - PowerShell permissions');
-
-    console.log('\n💡 You can edit this file manually to customize your Claude settings.\n');
+    console.log(`\n💡 Tip: You can edit ${settingsPath} to customize your settings.\n`);
   } catch (error) {
     console.error(`\n❌ Error writing settings.json: ${error.message}\n`);
     process.exit(1);
@@ -266,6 +265,25 @@ async function installClaude() {
 }
 
 async function main() {
+  // Check if Claude settings are installed
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  const claudeSettingsPath = path.join(homeDir, '.claude', 'settings.json');
+
+  if (!fs.existsSync(claudeSettingsPath)) {
+    console.log('👋 Welcome! It looks like you haven\'t installed Claude settings yet.\n');
+    const installNow = await prompts({
+      type: 'confirm',
+      name: 'value',
+      message: 'Would you like to install Claude settings now? (Recommended)',
+      initial: true
+    });
+
+    if (installNow.value) {
+      await installClaude();
+      console.log('\n✨ Great! Now let\'s continue with the main menu.\n');
+    }
+  }
+
   const action = await prompts({
     type: 'select',
     name: 'value',
